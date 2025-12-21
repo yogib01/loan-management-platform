@@ -1,5 +1,7 @@
 package com.lmp.loanmanagement.common.enums;
 
-public class Role {
-
+public enum Role {
+    BORROWER,
+    LOAN_OFFICER,
+    ADMIN
 }
