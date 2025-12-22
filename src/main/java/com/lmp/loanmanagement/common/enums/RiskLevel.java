@@ -1,5 +1,9 @@
 package com.lmp.loanmanagement.common.enums;
 
-public class RiskLevel {
+public enum RiskLevel {
+
+    LOW,
+    MEDIUM,
+    HIGH
 
 }
