@@ -1,43 +1,41 @@
-package com.lmp.loanmanagement.customer.service;
+package com.lmp.loanmanagement.customer.controller;
 
 import com.lmp.loanmanagement.customer.entity.Customer;
-import com.lmp.loanmanagement.customer.repository.CustomerRepository;
-import org.springframework.stereotype.Service;
+import com.lmp.loanmanagement.customer.service.CustomerService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Service
-public class CustomerService {
+@RestController
+@RequestMapping("/api/customers")
+public class CustomerController {
 
-    private final CustomerRepository customerRepository;
+    private final CustomerService customerService;
 
-    public CustomerService(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
+    public CustomerController(CustomerService customerService) {
+        this.customerService = customerService;
     }
 
-    public Customer createCustomer(Customer customer) {
-        return customerRepository.save(customer);
+    @PostMapping
+    public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer) {
+        return ResponseEntity.ok(customerService.createCustomer(customer));
     }
 
-    public Customer getCustomerById(Long id) {
-        return customerRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Customer not found with id: " + id));
+    @GetMapping("/{id}")
+    public ResponseEntity<Customer> getCustomerById(@PathVariable Long id) {
+        return ResponseEntity.ok(customerService.getCustomerById(id));
     }
 
-    public List<Customer> getAllCustomers() {
-        return customerRepository.findAll();
+    @GetMapping
+    public ResponseEntity<List<Customer>> getAllCustomers() {
+        return ResponseEntity.ok(customerService.getAllCustomers());
     }
 
-    public Customer updateCustomer(Long id, Customer updatedCustomer) {
-
-        Customer existingCustomer = getCustomerById(id);
-
-        existingCustomer.setFullName(updatedCustomer.getFullName());
-        existingCustomer.setMonthlyIncome(updatedCustomer.getMonthlyIncome());
-        existingCustomer.setEmploymentType(updatedCustomer.getEmploymentType());
-        existingCustomer.setActive(updatedCustomer.isActive());
-
-        return customerRepository.save(existingCustomer);
+    @PutMapping("/{id}")
+    public ResponseEntity<Customer> updateCustomer(
+            @PathVariable Long id,
+            @RequestBody Customer customer) {
+        return ResponseEntity.ok(customerService.updateCustomer(id, customer));
     }
 }
