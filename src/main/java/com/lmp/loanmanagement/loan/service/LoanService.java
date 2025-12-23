@@ -1,6 +1,9 @@
 package com.lmp.loanmanagement.loan.service;
 
 import com.lmp.loanmanagement.common.enums.LoanStatus;
+import com.lmp.loanmanagement.common.enums.RiskLevel;
+import com.lmp.loanmanagement.credit.entity.CreditScore;
+import com.lmp.loanmanagement.credit.service.CreditScoringService;
 import com.lmp.loanmanagement.loan.entity.Loan;
 import com.lmp.loanmanagement.loan.repository.LoanRepository;
 import org.springframework.stereotype.Service;
@@ -11,13 +14,35 @@ import java.util.List;
 public class LoanService {
 
     private final LoanRepository loanRepository;
+    private final CreditScoringService creditScoringService;
 
-    public LoanService(LoanRepository loanRepository) {
+    public LoanService(LoanRepository loanRepository,
+                       CreditScoringService creditScoringService) {
         this.loanRepository = loanRepository;
+        this.creditScoringService = creditScoringService;
     }
 
     public Loan applyLoan(Loan loan) {
+
+        // Step 1: Mark as applied
         loan.setStatus(LoanStatus.APPLIED);
+
+        // Step 2: Perform credit evaluation (mock)
+        CreditScore creditScore =
+                creditScoringService.evaluateCredit(
+                        loan.getCustomerId(),
+                        "DUMMY_PAN" // real PAN will come from Customer later
+                );
+
+        // Step 3: Decide approval based on risk
+        if (creditScore.getRiskLevel() == RiskLevel.HIGH) {
+            loan.setStatus(LoanStatus.REJECTED);
+        } else if (creditScore.getRiskLevel() == RiskLevel.MEDIUM) {
+            loan.setStatus(LoanStatus.MANUAL_REVIEW);
+        } else {
+            loan.setStatus(LoanStatus.APPROVED);
+        }
+
         return loanRepository.save(loan);
     }
 

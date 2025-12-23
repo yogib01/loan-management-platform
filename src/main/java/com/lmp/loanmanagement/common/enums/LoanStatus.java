@@ -5,8 +5,9 @@ public enum LoanStatus {
     APPLIED,
     CREDIT_CHECK,
     APPROVED,
+    MANUAL_REVIEW,
     REJECTED,
     DISBURSED,
-    CLOSED
+    CLOSED, 
 
 }
