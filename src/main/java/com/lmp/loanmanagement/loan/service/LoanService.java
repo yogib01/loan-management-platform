@@ -63,4 +63,31 @@ public class LoanService {
 
         return loanRepository.save(loan);
     }
+    
+    public Loan approveManualReview(Long loanId) {
+
+        Loan loan = getLoanById(loanId);
+
+        if (loan.getStatus() != LoanStatus.MANUAL_REVIEW) {
+            throw new RuntimeException(
+                    "Loan is not in manual review state");
+        }
+
+        loan.setStatus(LoanStatus.APPROVED);
+        return loanRepository.save(loan);
+    }
+
+    public Loan rejectManualReview(Long loanId) {
+
+        Loan loan = getLoanById(loanId);
+
+        if (loan.getStatus() != LoanStatus.MANUAL_REVIEW) {
+            throw new RuntimeException(
+                    "Loan is not in manual review state");
+        }
+
+        loan.setStatus(LoanStatus.REJECTED);
+        return loanRepository.save(loan);
+    }
+
 }
