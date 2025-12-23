@@ -43,4 +43,21 @@ public class LoanController {
         return ResponseEntity.ok(
                 loanService.updateLoanStatus(loanId, status));
     }
+    
+    @PutMapping("/{loanId}/approve")
+    public ResponseEntity<Loan> approveLoan(
+            @PathVariable Long loanId) {
+
+        return ResponseEntity.ok(
+                loanService.approveManualReview(loanId));
+    }
+
+    @PutMapping("/{loanId}/reject")
+    public ResponseEntity<Loan> rejectLoan(
+            @PathVariable Long loanId) {
+
+        return ResponseEntity.ok(
+                loanService.rejectManualReview(loanId));
+    }
+
 }
