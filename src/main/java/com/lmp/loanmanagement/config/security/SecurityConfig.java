@@ -22,13 +22,30 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
+            // Disable CSRF (JWT is stateless)
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sm ->
                     sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            
+            // Authorization rules
             .authorizeHttpRequests(auth -> auth
+            		
+            		// public endpoints
                     .requestMatchers("/api/auth/**").permitAll()
+                    
+                    //customer APIs
+                    .requestMatchers("/api/customers/**")
+                    .hasAnyRole("ADMIN", "LOAN_OFFICER")
+                    
+                    //Loan APIs
+                    .requestMatchers("/api/loans/**")
+                    .hasAnyRole("ADMIN", "LOAN_OFFICER")
+                    
+                    //any other request
                     .anyRequest().authenticated()
             )
+            
+            //jwt filter
             .addFilterBefore(jwtAuthenticationFilter,
                     UsernamePasswordAuthenticationFilter.class);
 

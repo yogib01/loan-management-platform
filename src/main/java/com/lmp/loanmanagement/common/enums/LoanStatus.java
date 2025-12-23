@@ -8,6 +8,6 @@ public enum LoanStatus {
     MANUAL_REVIEW,
     REJECTED,
     DISBURSED,
-    CLOSED, 
+    CLOSED
 
 }
